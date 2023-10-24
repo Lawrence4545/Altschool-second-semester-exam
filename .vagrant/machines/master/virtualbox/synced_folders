@@ -1,0 +1,1 @@
+{"virtualbox":{"/var/www/html":{"guestpath":"/var/www/html","hostpath":"C:/vagrant-vms/Altschool-second-semester-exam","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"C:/vagrant-vms/Altschool-second-semester-exam","disabled":false,"__vagrantfile":true}}}

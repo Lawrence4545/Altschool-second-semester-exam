@@ -1,0 +1,26 @@
+---
+- name: Execute Bash Script and Create Cron Job
+  hosts: 192.168.56.10
+  become: yes # Use sudo to execute commands
+
+  tasks:
+    - name: Execute Bash Script
+      shell: |
+        #!/bin/bash
+        # Your Bash script commands to verify PHP application accessibility
+        # For example, you can use curl or wget to check the application's status.
+        # Replace the following line with your actual commands.
+        curl -I http://192.168.56.10
+      register: script_output
+      ignore_errors: yes # This ensures the playbook continues even if the script fails
+
+    - name: Debug Output
+      debug:
+        var: script_output.stdout_lines # Display the output of the script execution
+
+    - name: Create Cron Job
+      cron:
+        name: Check Server Uptime
+        minute: 0
+        hour: 0
+        job: "/usr/bin/uptime > /var/log/uptime.log"
