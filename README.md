@@ -3,7 +3,9 @@
 
 This project automates the provisioning of two Ubuntu-based servers, "Master" and "Slave," using Vagrant. The "Master" node deploys a LAMP (Linux, Apache, MySQL, PHP) stack using a reusable and readable bash script. Additionally, an Ansible playbook is employed to execute the bash script on the "Slave" node and set up a cron job for server uptime monitoring.
 
+
 #########Prerequisites##########
+
 Before running this automation, make sure you have the following software installed on your system:
 
 1. Vagrant
