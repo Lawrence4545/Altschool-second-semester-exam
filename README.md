@@ -17,7 +17,7 @@ Before running this automation, make sure you have the following software instal
 ###########Getting Started##################
 
 Clone this repository to your local machine:
-git clone https://github.com/yourusername/automated-lamp-stack.git
+git clone https://github.com/Lawrence4545/Altschool-second-semester-exam.git
 
 Navigate to the project directory:
 cd Altschool-second-semester-exam
