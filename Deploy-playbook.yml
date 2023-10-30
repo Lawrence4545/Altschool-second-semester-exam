@@ -1,0 +1,23 @@
+
+---
+
+- name: Deploy PHP Application on Slave
+  hosts: slave
+  become: yes
+
+  tasks:
+    - name: Copy bash script to Slave
+      copy:
+        src: /c/vagrant-vms/Altschool-second-semester-exam/provision.sh
+        dest: /tmp/setup_master.sh
+        mode: '0755'
+
+    - name: Execute the bash script on Slave
+      shell: /tmp/setup_master.sh
+
+    - name: Create a cron job to check server uptime
+      cron:
+        name: Check Uptime
+        job: '/usr/bin/uptime > /var/log/uptime.log'
+        minute: '0'
+        hour: '0'
