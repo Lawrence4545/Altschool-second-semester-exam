@@ -18,16 +18,36 @@ sudo apt-get -y install php-curl php-zip
 sudo apt-get -y install libapache2-mod-php
 sudo service apache2 restart
 
-# Install Composer
+# Download and install Composer
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
+
+EXPECTED_HASH="e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02"
+ACTUAL_HASH=$(sha384sum composer-setup.php | awk '{print $1}')
+
+if [ "$ACTUAL_HASH" != "$EXPECTED_HASH" ]; then
+    echo "Composer installer checksum verification failed. Aborting installation."
+    exit 1
+fi
 php composer-setup.php --install-dir=/usr/local/bin --filename=composer
-sudo mv /home/vagrant/composer.phar /usr/local/bin/composer
+php -r "unlink('composer-setup.php');"
 sudo chmod +x /usr/local/bin/composer
 composer --version
 
+# Edit php.ini to update the include_path
+PHP_INI_PATH=$(php --ini | grep "Loaded Configuration File" | sed -e "s|.*:\s*||")
+PHP_INCLUDE_PATH="/var/www/html/my-app/vendor" 
+
+# Check if the php.ini path is found
+if [ -f "$PHP_INI_PATH" ]; then
+    # Update the include_path in php.ini
+    sudo sed -i "s|;include_path = \".:/usr/share/php\"|include_path = \".:/usr/share/php:$PHP_INCLUDE_PATH\"|" "$PHP_INI_PATH"
+
+    # Restart the web server (Apache in this case)
+    sudo service apache2 restart
+    echo "Updated include_path in $PHP_INI_PATH"
+else
+    echo "PHP configuration file not found. Please update include_path manually."
+fi
 
 # Configure MySQL (You should set your own password here)
 sudo debconf-set-selections <<< 'mysql-server mysql-server/root_password password root'
